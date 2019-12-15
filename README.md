@@ -1,4 +1,4 @@
-# ts-promise
+# ts-promise-from-functor-observer
 
 Typescript version Promise.
 
