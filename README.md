@@ -27,3 +27,7 @@ Typescript version Promise.
     ```
 
     进行调试
+    
+## 指南
+
+[手撕源码系列 —— 函子 + 观察者模式 + 状态 = Promise](https://juejin.im/post/5df4d20ff265da33964883f9)
