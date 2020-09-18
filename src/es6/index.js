@@ -63,8 +63,8 @@ class Promise {
       typeof onRejected === 'function'
         ? onRejected
         : error => {
-            throw error
-          }
+          throw error
+        }
 
     // then 方法必须返回一个 promise 对象
     const anotherPromise = new Promise((resolve, reject) => {
@@ -129,7 +129,7 @@ Promise.PENDING = 'PENDING'
 Promise.FULFILLED = 'FULFILLED'
 Promise.REJECTED = 'REJECTED'
 
-Promise.resolvePromise = function(anotherPromise, x, resolve, reject) {
+Promise.resolvePromise = function (anotherPromise, x, resolve, reject) {
   // 如果 onFulfilled 或者 onRejected 返回一个值 x ，则运行下面的 Promise 解决过程：[[Resolve]](promise2, x)
   // 运行 [[Resolve]](promise, x) 需遵循以下步骤：
 
@@ -142,13 +142,10 @@ Promise.resolvePromise = function(anotherPromise, x, resolve, reject) {
   if (x instanceof Promise) {
     x.then(
       // 如果 x 处于执行态，用相同的值执行 promise
-      value => {
-        return Promise.resolvePromise(anotherPromise, value, resolve, reject)
-      },
+      value => Promise.resolvePromise(anotherPromise, value, resolve, reject)
+      ,
       // 如果 x 处于拒绝态，用相同的拒因拒绝 promise
-      reason => {
-        return reject(reason)
-      }
+      reason => reject(reason)
     )
     // 如果 x 为对象或者函数
   } else if (x !== null && (typeof x === 'object' || typeof x === 'function')) {
@@ -206,23 +203,18 @@ Promise.resolvePromise = function(anotherPromise, x, resolve, reject) {
   }
 }
 
-Promise.resolve = function(value) {
-  return new Promise((resolve, reject) => {
-    return resolve(value)
-  })
+Promise.resolve = function (value) {
+  return new Promise((resolve, reject) => resolve(value))
 }
 
-Promise.reject = function(reason) {
-  return new Promise((resolve, reject) => {
-    return reject(reason)
-  })
+Promise.reject = function (reason) {
+  return new Promise((resolve, reject) => reject(reason))
 }
 
-Promise.all = function(promises) {
+Promise.all = function (promises) {
   if (!isArrayLikeObject(promises)) {
     throw new TypeError(
-      `${
-        typeof promises === 'undefined' ? '' : typeof promises
+      `${typeof promises === 'undefined' ? '' : typeof promises
       } ${promises} is not iterable (cannot read property Symbol(Symbol.iterator))`
     )
   }
@@ -252,11 +244,10 @@ Promise.all = function(promises) {
   })
 }
 
-Promise.race = function(promises) {
+Promise.race = function (promises) {
   if (!isArrayLikeObject(promises)) {
     throw new TypeError(
-      `${
-        typeof promises === 'undefined' ? '' : typeof promises
+      `${typeof promises === 'undefined' ? '' : typeof promises
       } ${promises} is not iterable (cannot read property Symbol(Symbol.iterator))`
     )
   }
@@ -264,12 +255,9 @@ Promise.race = function(promises) {
   return new Promise((resolve, reject) => {
     for (const promise of promises) {
       Promise.resolve(promise).then(
-        value => {
-          return resolve(value)
-        },
-        reason => {
-          return reject(reason)
-        }
+        value => resolve(value)
+        ,
+        reason => reject(reason)
       )
     }
   })
@@ -309,7 +297,7 @@ function isArrayLikeObject(value) {
   return isObjectLike(value) && isArrayLike(value)
 }
 
-Promise.defer = Promise.deferred = function() {
+Promise.defer = Promise.deferred = function () {
   let dfd = {}
   dfd.promise = new Promise((resolve, reject) => {
     dfd.resolve = resolve
