@@ -219,8 +219,6 @@ Promise.all = function(promises) {
     )
   }
 
-  // 实现的 promise 基于 macroTask 的 setTimeout 实现，需要 async/await 调节执行顺序
-  // 原生的 promise 基于 microTask 实现，执行顺序是正确的，不需要 async/await
   return new Promise(async (resolve, reject) => {
     const result = []
 
@@ -261,6 +259,73 @@ Promise.race = function(promises) {
       )
     }
   })
+}
+
+Promise.any = function(promises) {
+  return new Promise(async (resolve, reject) => {
+    const result = []
+    const size = promises.length
+    const errors = []
+
+    for (const promise of promises) {
+      await Promise.resolve(promise).then(resolvePromise, rejectPromise)
+    }
+
+    return resolve(result)
+
+    function resolvePromise(value) {
+      if (value instanceof Promise) {
+        value.then(resolvePromise, rejectPromise)
+      } else {
+        result.push(value)
+      }
+    }
+
+    function rejectPromise(reason) {
+      errors.push(reason)
+      if (errors.length === size) {
+        return reject(new AggregateError(errors))
+      }
+    }
+  })
+}
+
+Promise.allSettled = function(promises) {
+  return new Promise(async (resolve, reject) => {
+    const result = []
+    const size = promises.length
+
+    for (const promise of promises) {
+      await Promise.resolve(promise).then(resolvePromise, rejectPromise)
+    }
+
+    return resolve(result)
+
+    function resolvePromise(value) {
+      if (value instanceof Promise) {
+        value.then(resolvePromise, rejectPromise)
+      } else {
+        result.push({
+          status: 'fulfilled',
+          value
+        })
+      }
+    }
+
+    function rejectPromise(reason) {
+      result.push({
+        status: 'rejected',
+        value: reason
+      })
+    }
+  })
+}
+
+class AggregateError extends Error {
+  constructor(errors) {
+    super()
+    this.errors = errors
+  }
 }
 
 function isArrayLikeObject(value) {
