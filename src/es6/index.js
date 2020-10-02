@@ -328,7 +328,7 @@ Promise.allSettled = function(promises) {
     function rejectPromise(reason) {
       result.push({
         status: 'rejected',
-        value: reason
+        reason
       })
     }
   })
