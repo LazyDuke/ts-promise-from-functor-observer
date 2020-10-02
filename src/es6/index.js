@@ -291,9 +291,8 @@ Promise.any = function(promises) {
 }
 
 Promise.allSettled = function(promises) {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async resolve => {
     const result = []
-    const size = promises.length
 
     for (const promise of promises) {
       await Promise.resolve(promise).then(resolvePromise, rejectPromise)
