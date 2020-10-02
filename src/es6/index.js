@@ -262,6 +262,13 @@ Promise.race = function(promises) {
 }
 
 Promise.any = function(promises) {
+  if (!isArrayLikeObject(promises)) {
+    throw new TypeError(
+      `${
+        typeof promises === 'undefined' ? '' : typeof promises
+      } ${promises} is not iterable (cannot read property Symbol(Symbol.iterator))`
+    )
+  }
   return new Promise(async (resolve, reject) => {
     const result = []
     const size = promises.length
@@ -291,6 +298,13 @@ Promise.any = function(promises) {
 }
 
 Promise.allSettled = function(promises) {
+  if (!isArrayLikeObject(promises)) {
+    throw new TypeError(
+      `${
+        typeof promises === 'undefined' ? '' : typeof promises
+      } ${promises} is not iterable (cannot read property Symbol(Symbol.iterator))`
+    )
+  }
   return new Promise(async resolve => {
     const result = []
 
