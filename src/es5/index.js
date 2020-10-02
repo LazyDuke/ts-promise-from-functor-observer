@@ -134,7 +134,7 @@ Promise.resolvePromise = function(anotherPromise, x, resolve, reject) {
   }
   // 如果 x 为 Promise ，则使 promise 接受 x 的状态
   if (x instanceof Promise) {
-    x.then(
+    return x.then(
       function(
         // 如果 x 处于执行态，用相同的值执行 promise
         value
@@ -156,7 +156,7 @@ Promise.resolvePromise = function(anotherPromise, x, resolve, reject) {
       var then = x.then
       // 如果 then 是函数，将 x 作为函数的作用域 this 调用之。传递两个回调函数作为参数，
       if (typeof then === 'function') {
-        then.call(
+        return then.call(
           x,
           function(
             // 第一个参数叫做 resolvePromise ，
