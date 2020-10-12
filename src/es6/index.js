@@ -270,7 +270,6 @@ Promise.any = function(promises) {
     )
   }
   return new Promise(async (resolve, reject) => {
-    const result = []
     const size = promises.length
     const errors = []
 
@@ -284,7 +283,7 @@ Promise.any = function(promises) {
       if (value instanceof Promise) {
         value.then(resolvePromise, rejectPromise)
       } else {
-        result.push(value)
+        resolve(value)
       }
     }
 
